@@ -14,7 +14,10 @@ import { UserActiveInterface } from 'src/common/interfaces/user-active.interface
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('cats')
+@ApiBearerAuth()
 @Auth(Role.USER)
 @Controller('cats')
 export class CatsController {
