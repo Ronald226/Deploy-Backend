@@ -38,4 +38,13 @@ export class AuthController {
     console.log(user)
     return this.authService.profile(user);
   }
+
+  @ApiBearerAuth()
+  @Get('valid')
+  @Auth(Role.USER)
+  isvalid(@ActiveUser() user: UserActiveInterface) {
+    console.log(user)
+    if(this.authService.profile(user) != null)
+      return "this user is valid";
+  }
 }
