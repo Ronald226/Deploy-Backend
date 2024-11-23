@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PacientesService } from './pacientes.service';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
@@ -18,17 +18,22 @@ export class PacientesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.pacientesService.findOne(id);
+  findOne(@Param('id') id: number) {  
+    return this.pacientesService.findOneDni(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updatePacienteDto: UpdatePacienteDto) {
-    return this.pacientesService.update(id, updatePacienteDto);
+  @Get()
+  findOneNyA( @Query('nombres') nombres: string, @Query('apellidos') apellidos: string) {  
+    return this.pacientesService.findOneNyA(nombres, apellidos);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.pacientesService.remove(id);
+  @Patch(':dni')
+  update(@Param('dni') dni: number, @Body() updatePacienteDto: UpdatePacienteDto) {
+    return this.pacientesService.update(dni, updatePacienteDto);
+  }
+
+  @Delete(':dni')
+  remove(@Param('dni') dni: number) {
+    return this.pacientesService.remove(dni);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,15 +22,33 @@ export class PacientesService {
     return await this.pacientesRepository.find();
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} paciente`;
+  async findOneDni(dni: number) {
+    const pacienteF = await this.pacientesRepository.findOneBy({ dni });
+    if(!pacienteF){
+      throw new BadRequestException('Paciente not found');
+    }
+    return pacienteF;
   }
 
-  async update(id: number, updatePacienteDto: UpdatePacienteDto) {
-    return `This action updates a #${id} paciente`;
+  async findOneNyA(nombres: string, apellidos: string) {
+    const pacienteF = await this.pacientesRepository.findOne({ 
+      where:{
+        nombres: nombres, 
+        apellidos: apellidos
+      } 
+    });
+
+    if(!pacienteF){
+      throw new BadRequestException('Paciente not found');
+    }
+    return pacienteF;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} paciente`;
+  async update(dni: number, updatePacienteDto: UpdatePacienteDto) {
+    return await this.pacientesRepository.update(dni, updatePacienteDto);
+  }
+
+  async remove(dni: number) {
+    return await this.pacientesRepository.softDelete({dni});
   }
 }
