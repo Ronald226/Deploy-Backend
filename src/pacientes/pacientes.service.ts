@@ -14,9 +14,25 @@ export class PacientesService {
   
   
   async create(createPacienteDto: CreatePacienteDto) {
+    // Verificar si el DNI ya existe
+    const pacienteExistente = await this.pacientesRepository.findOne({
+      where: [
+        { dni: createPacienteDto.dni }, // Validar por DNI
+        { historia: createPacienteDto.historia }, // Validar por Número de Historia Clínica
+      ],
+    });
+
+    if (pacienteExistente) {
+      throw new BadRequestException(
+        'El paciente ya existe con este DNI o Número de Historia Clínica',
+      );
+    }
+
+    // Si no existe, crear el paciente
     const paciente = this.pacientesRepository.create(createPacienteDto);
     return await this.pacientesRepository.save(paciente);
   }
+
 
   async findAll() {
     return await this.pacientesRepository.find();
