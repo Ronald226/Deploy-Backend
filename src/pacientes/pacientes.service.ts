@@ -3,7 +3,7 @@ import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Paciente } from './entities/paciente.entity';
-import { Repository } from 'typeorm';
+import { Repository,ILike  } from 'typeorm';
 
 @Injectable()
 export class PacientesService {
@@ -18,7 +18,7 @@ export class PacientesService {
     const pacienteExistente = await this.pacientesRepository.findOne({
       where: [
         { dni: createPacienteDto.dni }, // Validar por DNI
-        { historia: createPacienteDto.historia }, // Validar por Número de Historia Clínica
+        { historia: createPacienteDto.historia }, // Validar por Historia Clínica
       ],
     });
 
@@ -46,22 +46,30 @@ export class PacientesService {
     return pacienteF;
   }
 
-  async findOneNyA(nombres: string, apellidos: string) {
-    const pacienteF = await this.pacientesRepository.findOne({ 
-      where:{
-        nombres: nombres, 
-        apellidos: apellidos
-      } 
-    });
-
-    if(!pacienteF){
-      throw new BadRequestException('Paciente not found');
-    }
-    return pacienteF;
-  }
-
   async update(dni: number, updatePacienteDto: UpdatePacienteDto) {
     return await this.pacientesRepository.update(dni, updatePacienteDto);
+  }
+
+ 
+  // Buscar por nombres y apellidos
+  async searchByNameAndLastName(nombres: string, apellidos: string) {
+    
+    if (!nombres || !apellidos) {
+      throw new BadRequestException('Debe proporcionar tanto el nombre como el apellido');
+    }
+
+    // Buscar pacientes que coincidan con ambos nombres y apellidos
+    const pacientes = await this.pacientesRepository.find({
+      where: {
+        nombres: ILike(`%${nombres}%`),  // Coincidencia en el nombre
+        apellidos: ILike(`%${apellidos}%`), // Coincidencia en el apellido
+      },
+    });
+    if (pacientes.length === 0) {
+      throw new BadRequestException('No se encontraron pacientes con ese nombre y apellido');
+    }
+
+    return pacientes;
   }
 
   async remove(dni: number) {

@@ -17,16 +17,21 @@ export class PacientesController {
     return this.pacientesService.findAll();
   }
 
+  //Metodo para buscar por nombres y apellidos
+  @Get('search')
+  search(
+    @Query('nombres') nombres: string,
+    @Query('apellidos') apellidos: string,
+  ) {
+    return this.pacientesService.searchByNameAndLastName(nombres, apellidos);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {  
     return this.pacientesService.findOneDni(id);
   }
 
-  @Get()
-  findOneNyA( @Query('nombres') nombres: string, @Query('apellidos') apellidos: string) {  
-    return this.pacientesService.findOneNyA(nombres, apellidos);
-  }
-
+  
   @Patch(':dni')
   update(@Param('dni') dni: number, @Body() updatePacienteDto: UpdatePacienteDto) {
     return this.pacientesService.update(dni, updatePacienteDto);
