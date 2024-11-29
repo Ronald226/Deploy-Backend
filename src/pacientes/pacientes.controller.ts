@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query,BadRequestException } from '@nestjs/common';
 import { PacientesService } from './pacientes.service';
+import { ApiQuery} from '@nestjs/swagger';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
 
@@ -19,10 +20,18 @@ export class PacientesController {
 
   //Metodo para buscar por nombres y apellidos
   @Get('search')
-  search(
-    @Query('nombres') nombres: string,
-    @Query('apellidos') apellidos: string,
+  @ApiQuery({ name: 'nombres', required: false, type: String })
+  @ApiQuery({ name: 'apellidos', required: false, type: String })
+  async search(
+    @Query('nombres') nombres?: string,
+    @Query('apellidos') apellidos?: string,
   ) {
+    if (!nombres && !apellidos) {
+      throw new BadRequestException(
+        'Debe proporcionar al menos el nombre o el apellido para realizar la búsqueda',
+      );
+    }
+
     return this.pacientesService.searchByNameAndLastName(nombres, apellidos);
   }
 

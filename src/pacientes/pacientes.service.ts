@@ -51,26 +51,35 @@ export class PacientesService {
   }
 
  
-  // Buscar por nombres y apellidos
-  async searchByNameAndLastName(nombres: string, apellidos: string) {
-    
-    if (!nombres || !apellidos) {
-      throw new BadRequestException('Debe proporcionar tanto el nombre como el apellido');
+  // Método de busqueda por nombres y/o apellidos
+  async searchByNameAndLastName(nombres?: string, apellidos?: string) {
+   
+    if (!nombres && !apellidos) {
+      throw new BadRequestException(
+        'Debe proporcionar al menos el nombre o el apellido para realizar la búsqueda',
+      );
     }
 
-    // Buscar pacientes que coincidan con ambos nombres y apellidos
+    // Construir las condiciones dinámicamente
+    const whereCondition: any = {};
+    if (nombres) {
+      whereCondition.nombres = ILike(`%${nombres}%`);
+    }
+    if (apellidos) {
+      whereCondition.apellidos = ILike(`%${apellidos}%`);
+    }
+
+    // Buscar pacientes 
     const pacientes = await this.pacientesRepository.find({
-      where: {
-        nombres: ILike(`%${nombres}%`),  // Coincidencia en el nombre
-        apellidos: ILike(`%${apellidos}%`), // Coincidencia en el apellido
-      },
+      where: whereCondition,
     });
     if (pacientes.length === 0) {
-      throw new BadRequestException('No se encontraron pacientes con ese nombre y apellido');
+      throw new BadRequestException('No se encontraron pacientes con los criterios especificados');
     }
 
     return pacientes;
   }
+
 
   async remove(dni: number) {
     return await this.pacientesRepository.softDelete({dni});
