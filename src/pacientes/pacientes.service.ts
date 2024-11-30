@@ -82,6 +82,6 @@ export class PacientesService {
 
 
   async remove(dni: number) {
-    return await this.pacientesRepository.softDelete({dni});
+    return await this.pacientesRepository.delete({dni});
   }
 }
