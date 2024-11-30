@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany } from "typeorm";
+import { Atencion } from '../../atencion/entities/atencion.entity';
 
 @Entity()
 export class Paciente {
@@ -20,4 +21,7 @@ export class Paciente {
 
     @DeleteDateColumn()
     deletedAt: Date;
+
+    @OneToMany(() => Atencion, (atencion) => atencion.paciente)
+    atenciones: Atencion[];
 }

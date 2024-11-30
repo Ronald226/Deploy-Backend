@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { PacientesModule } from './pacientes/pacientes.module';
+import { AtencionModule } from './atencion/atencion.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PacientesModule } from './pacientes/pacientes.module';
     UsersModule,
     AuthModule,
     PacientesModule,
+    AtencionModule,
   ],
   controllers: [],
   providers: [],
