@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { ActiveUser } from 'src/common/decorators/active-user.decorator';
 import { UserActiveInterface } from 'src/common/interfaces/user-active.interface';
@@ -8,6 +8,7 @@ import { Auth } from './decorators/auth.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from './guard/auth.guard';
 
 
 @ApiTags('auth')
@@ -32,19 +33,13 @@ export class AuthController {
   }
   
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get('profile')
-  @Auth(Role.USER)
-  profile(@ActiveUser() user: UserActiveInterface) {
-    console.log(user)
-    return this.authService.profile(user);
-  }
-
-  @ApiBearerAuth()
-  @Get('valid')
-  @Auth(Role.USER)
-  isvalid(@ActiveUser() user: UserActiveInterface) {
-    console.log(user)
-    if(this.authService.profile(user) != null)
-      return "this user is valid";
+  profile(@Req() req) {
+    const { email } = req.user;
+    if (!email){
+      throw new UnauthorizedException('Email is missing in user payload');
+    }
+    return this.authService.profile(email);
   }
 }
