@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Atencion } from './entities/atencion.entity';
 import { Paciente } from '../pacientes/entities/paciente.entity';
+import { Doctor } from '../doctores/entities/doctor.entity';
 
 @Injectable()
 export class AtencionService {
@@ -13,28 +14,43 @@ export class AtencionService {
     private readonly atencionesRepository: Repository<Atencion>,
     @InjectRepository(Paciente)
     private readonly pacientesRepository: Repository<Paciente>,
+    @InjectRepository(Doctor)
+    private readonly doctorRepository: Repository<Doctor>,
+    
   ) {}
 
   async create(createAtencionDto: CreateAtencionDto) {
     const paciente = await this.pacientesRepository.findOneBy({
       historia: createAtencionDto.historia,
     });
-
+  
     if (!paciente) {
       throw new BadRequestException(
-        'No se encontró un paciente con el numero de historia proporcionado.',
+        'No se encontró un paciente con el número de historia proporcionado.',
       );
     }
-
+  
+    const doctor = await this.doctorRepository.findOneBy({
+      id: createAtencionDto.doctorId,
+    });
+  
+    if (!doctor) {
+      throw new BadRequestException(
+        'No se encontró un doctor con el ID proporcionado.',
+      );
+    }
+  
     const atencion = this.atencionesRepository.create({
       paciente,
+      doctor,
       fecha: createAtencionDto.fecha,
       especialidad: createAtencionDto.especialidad,
-      doctor: createAtencionDto.doctor,
     });
-
+  
     return await this.atencionesRepository.save(atencion);
   }
+  
+  
 
   async findAll() {
     return await this.atencionesRepository.find();

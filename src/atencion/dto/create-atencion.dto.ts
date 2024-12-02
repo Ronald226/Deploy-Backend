@@ -15,6 +15,6 @@ export class CreateAtencionDto {
   especialidad: string;
 
   @IsNotEmpty()
-  @IsString()
-  doctor: string;
+  @IsNumber()
+  doctorId: number; // Ahora recibimos el ID del doctor
 }

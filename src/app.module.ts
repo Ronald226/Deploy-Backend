@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { PacientesModule } from './pacientes/pacientes.module';
 import { AtencionModule } from './atencion/atencion.module';
+import { DoctoresModule } from './doctores/doctores.module';
+
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { AtencionModule } from './atencion/atencion.module';
     AuthModule,
     PacientesModule,
     AtencionModule,
+    DoctoresModule,
   ],
   controllers: [],
   providers: [],
