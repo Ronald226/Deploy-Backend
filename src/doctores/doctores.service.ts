@@ -30,11 +30,12 @@ export class DoctorService {
     return doctorF;
   }
 
-  update(id: number, updateDoctoreDto: UpdateDoctoreDto) {
-    return `This action updates a #${id} doctore`;
+  async update(id: number, updateDoctoreDto: UpdateDoctoreDto) {
+    return await this.doctorRepository.update(id,updateDoctoreDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} doctore`;
+  async remove(id: number) {
+    return await  this.doctorRepository.delete({id});
   }
+  
 }

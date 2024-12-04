@@ -34,4 +34,9 @@ export class AtencionController {
   remove(@Param('id') id: string) {
     return this.atencionService.remove(+id);
   }
+
+  @Get('historia/:historia')
+   async findByHistoria(@Param('historia') historia: number) {
+   return await this.atencionService.findByHistoria(historia);
+  }
 }

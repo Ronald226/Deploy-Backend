@@ -25,11 +25,12 @@ export class EspecialidadesService {
     return `This action returns a #${id} especialidade`;
   }
 
-  update(id: number, updateEspecialidadeDto: UpdateEspecialidadeDto) {
-    return `This action updates a #${id} especialidade`;
+  async update(id: number, updateEspecialidadeDto: UpdateEspecialidadeDto) {
+    return await this.especialidadRepository.update(id,updateEspecialidadeDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} especialidade`;
+  async remove(id: number) {
+    return  await this.especialidadRepository.delete({id});
   }
+
 }

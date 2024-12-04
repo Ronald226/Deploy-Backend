@@ -57,9 +57,27 @@ export class AtencionService {
     });
     return await this.atencionesRepository.save(atencion);
   }
-  
-  
 
+  async findByHistoria(historia: number) {
+    // Busca al paciente por número de historia
+    const paciente = await this.pacientesRepository.findOneBy({ historia });
+  
+    if (!paciente) {
+      throw new BadRequestException(
+        'No se encontró un paciente con el número de historia proporcionado.',
+      );
+    }
+  
+    // Busca todas las atenciones asociadas al paciente
+    const atenciones = await this.atencionesRepository.find({
+      where: { paciente: { dni: paciente.dni } },
+      relations: ['doctor'], // Incluye relaciones si es necesario
+    });
+  
+    return atenciones;
+  }
+  
+  
   async findAll() {
     return await this.atencionesRepository.find();
   }
@@ -73,13 +91,11 @@ export class AtencionService {
     return atencionF;
   }
 
-  
-
-  update(id: number, updateAtencionDto: UpdateAtencionDto) {
-    return `This action updates a #${id} atencion`;
+  async update(id: number, updateAtencionDto: UpdateAtencionDto) {
+    return await this.atencionesRepository.update(id, updateAtencionDto); `This action updates a #${id} atencion`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} atencion`;
+  async remove(id: number) {
+    return await this.atencionesRepository.delete({id});
   }
 }
