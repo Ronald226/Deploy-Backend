@@ -16,13 +16,10 @@ export class DoctorService {
     const doctor = this.doctorRepository.create(createDoctorDto);
     return await this.doctorRepository.save(doctor);
   }
-
-
+  
   async findAll() {
     return await this.doctorRepository.find();
   }
-
-  
 
   async findOne(id: number) {
   

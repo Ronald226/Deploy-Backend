@@ -38,6 +38,15 @@ export class PacientesService {
     return await this.pacientesRepository.find();
   }
 
+   // metodo para buscar por historia clinica
+   async findOneByHistoria(historia: number) {
+    const paciente = await this.pacientesRepository.findOneBy({ historia });
+    if (!paciente) {
+      throw new BadRequestException('Paciente no encontrado con el numero de historia proporcionado.');
+    }
+    return paciente;
+  }
+
   async findOneDni(dni: number) {
     const pacienteF = await this.pacientesRepository.findOneBy({ dni });
     if(!pacienteF){
@@ -45,6 +54,8 @@ export class PacientesService {
     }
     return pacienteF;
   }
+
+  
 
   async update(dni: number, updatePacienteDto: UpdatePacienteDto) {
     return await this.pacientesRepository.update(dni, updatePacienteDto);
@@ -79,6 +90,8 @@ export class PacientesService {
 
     return pacientes;
   }
+
+
 
 
   async remove(dni: number) {

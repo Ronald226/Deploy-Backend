@@ -35,11 +35,16 @@ export class PacientesController {
     return this.pacientesService.searchByNameAndLastName(nombres, apellidos);
   }
 
+  // metodo para buscar por historia
+  @Get('historia/:historia')
+  async findOneByHistoria(@Param('historia') historia: number) {
+    return this.pacientesService.findOneByHistoria(historia);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {  
     return this.pacientesService.findOneDni(id);
   }
-
   
   @Patch(':dni')
   update(@Param('dni') dni: number, @Body() updatePacienteDto: UpdatePacienteDto) {

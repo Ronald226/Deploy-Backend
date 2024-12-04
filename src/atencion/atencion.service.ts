@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { Atencion } from './entities/atencion.entity';
 import { Paciente } from '../pacientes/entities/paciente.entity';
 import { Doctor } from '../doctores/entities/doctor.entity';
+import { Especialidad } from '../especialidades/entities/especialidade.entity';
 
 @Injectable()
 export class AtencionService {
@@ -16,6 +17,8 @@ export class AtencionService {
     private readonly pacientesRepository: Repository<Paciente>,
     @InjectRepository(Doctor)
     private readonly doctorRepository: Repository<Doctor>,
+    @InjectRepository(Especialidad)
+    private readonly especialidadRepository: Repository<Especialidad>,
     
   ) {}
 
@@ -29,6 +32,7 @@ export class AtencionService {
         'No se encontró un paciente con el número de historia proporcionado.',
       );
     }
+    
   
     const doctor = await this.doctorRepository.findOneBy({
       id: createAtencionDto.doctorId,
@@ -39,14 +43,18 @@ export class AtencionService {
         'No se encontró un doctor con el ID proporcionado.',
       );
     }
-  
+
+    const especialidad = await this.especialidadRepository.findOneBy({
+      id: createAtencionDto.especialidadId,
+    });
+
     const atencion = this.atencionesRepository.create({
       paciente,
       doctor,
+      especialidad: especialidad.nombre, 
       fecha: createAtencionDto.fecha,
-      especialidad: createAtencionDto.especialidad,
+      estado: createAtencionDto.estado
     });
-  
     return await this.atencionesRepository.save(atencion);
   }
   
@@ -64,6 +72,8 @@ export class AtencionService {
     }
     return atencionF;
   }
+
+  
 
   update(id: number, updateAtencionDto: UpdateAtencionDto) {
     return `This action updates a #${id} atencion`;

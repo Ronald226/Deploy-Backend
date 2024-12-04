@@ -20,5 +20,9 @@ export class Atencion {
   @Column()
   especialidad: string;
 
+  @Column({ type: 'boolean', default: true })
+  estado: boolean;
+
+
   
 }
