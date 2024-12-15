@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsDate } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString,IsBoolean, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
 export class CreateAtencionDto {
 @IsNotEmpty()
@@ -11,10 +11,13 @@ export class CreateAtencionDto {
   fecha: Date;
 
   @IsNotEmpty()
-  @IsString()
-  especialidad: string;
+  @IsNumber()
+  doctorId: number; // Ahora recibimos el ID del doctor
 
   @IsNotEmpty()
   @IsNumber()
-  doctorId: number; // Ahora recibimos el ID del doctor
+  especialidadId: number;
+
+  @IsBoolean()
+  estado?: boolean; 
 }

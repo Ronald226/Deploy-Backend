@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany,ManyToOne } from 'typeorm';
 import { Atencion } from '../../atencion/entities/atencion.entity';
+import { Especialidad } from '../../especialidades/entities/especialidade.entity';
+
 
 @Entity()
 export class Doctor {
@@ -14,4 +16,6 @@ export class Doctor {
 
   @OneToMany(() => Atencion, (atencion) => atencion.doctor)
   atenciones: Atencion[];
+  @ManyToOne(() => Especialidad, (especialidad) => especialidad.doctores, { eager: true })
+  especialidad: Especialidad;
 }
