@@ -9,4 +9,8 @@ export class CreateDoctoreDto {
   @IsNotEmpty()
   @IsString()
   apellido: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  especialidadId: number;
 }

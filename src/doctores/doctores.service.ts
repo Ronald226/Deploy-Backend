@@ -4,16 +4,37 @@ import { UpdateDoctoreDto } from './dto/update-doctore.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doctor } from './entities/doctor.entity';
+import { Especialidad } from 'src/especialidades/entities/especialidade.entity';
 
 @Injectable()
 export class DoctorService {
   constructor(
     @InjectRepository(Doctor)
     private readonly doctorRepository: Repository<Doctor>,
+    @InjectRepository(Especialidad)
+    private readonly especialidadRepository: Repository<Especialidad>,
   ) {}
 
   async create(createDoctorDto: CreateDoctoreDto): Promise<Doctor> {
-    const doctor = this.doctorRepository.create(createDoctorDto);
+
+    const especialidad = await this.especialidadRepository.findOneBy({
+      id: createDoctorDto.especialidadId,
+    });
+
+    if (!especialidad) {
+      throw new BadRequestException(
+        'No se encontró una especialidad con el ID proporcionado.',
+      );
+    }
+    
+    
+    // Crear el nuevo doctor con la especialidad asociada
+    const doctor = this.doctorRepository.create({
+      nombre: createDoctorDto.nombre,
+      apellido: createDoctorDto.apellido,
+      especialidad: especialidad, // Asociar la especialidad
+    });
+    
     return await this.doctorRepository.save(doctor);
   }
   
