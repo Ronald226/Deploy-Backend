@@ -9,6 +9,7 @@ import { PacientesModule } from './pacientes/pacientes.module';
 import { AtencionModule } from './atencion/atencion.module';
 import { DoctoresModule } from './doctores/doctores.module';
 import { EspecialidadesModule } from './especialidades/especialidades.module';
+import { FarmacosModule } from './farmacos/farmacos.module';
 
 
 @Module({
@@ -44,6 +45,7 @@ import { EspecialidadesModule } from './especialidades/especialidades.module';
     AtencionModule,
     DoctoresModule,
     EspecialidadesModule,
+    FarmacosModule,
   ],
   controllers: [],
   providers: [],
