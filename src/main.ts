@@ -17,8 +17,6 @@ async function bootstrap() {
   );
   app.enableCors();
 
-  app.enableCors();
-
   const config = new DocumentBuilder()
     .setTitle("Cats example")
     .setDescription("The cats API description")
