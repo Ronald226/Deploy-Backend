@@ -11,7 +11,7 @@ export class Atencion {
   @ManyToOne(() => Paciente, (paciente) => paciente.atenciones, { eager: true })
   paciente: Paciente;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.atenciones)
+  @ManyToOne(() => Doctor, (doctor) => doctor.atenciones,{ eager: true })
   doctor: Doctor;
 
   @Column()

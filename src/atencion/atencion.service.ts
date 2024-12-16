@@ -34,8 +34,10 @@ export class AtencionService {
     }
     
   
-    const doctor = await this.doctorRepository.findOneBy({
-      id: createAtencionDto.doctorId,
+    // Buscar al doctor por ID e incluir su especialidad
+    const doctor = await this.doctorRepository.findOne({
+      where: { id: createAtencionDto.doctorId },
+      relations: ['especialidad'], // Incluye la relación de especialidad
     });
   
     if (!doctor) {
@@ -44,14 +46,10 @@ export class AtencionService {
       );
     }
 
-    const especialidad = await this.especialidadRepository.findOneBy({
-      id: createAtencionDto.especialidadId,
-    });
-
     const atencion = this.atencionesRepository.create({
       paciente,
       doctor,
-      especialidad: especialidad.nombre, 
+      especialidad: doctor.especialidad.nombre, 
       fecha: createAtencionDto.fecha,
       estado: createAtencionDto.estado
     });
@@ -116,28 +114,22 @@ export class AtencionService {
       atencion.paciente = paciente;
     }
 
-    if (updateAtencionDto.doctorId) {
-      const doctor = await this.doctorRepository.findOneBy({ id: updateAtencionDto.doctorId });
-      if (!doctor) {
-        throw new BadRequestException('No se encontró un doctor con el ID proporcionado.');
-      }
-      atencion.doctor = doctor;
+      // Validar y actualizar el doctor (y su especialidad asociada)
+  if (updateAtencionDto.doctorId) {
+    const doctor = await this.doctorRepository.findOne({
+      where: { id: updateAtencionDto.doctorId },
+      relations: ['especialidad'], // Incluir la relación de especialidad
+    });
+
+    if (!doctor) {
+      throw new BadRequestException('No se encontró un doctor con el ID proporcionado.');
     }
 
-    if (updateAtencionDto.especialidadId) {
-      const especialidad = await this.especialidadRepository.findOneBy({
-        id: updateAtencionDto.especialidadId,
-      });
-
-      if (!especialidad) {
-        throw new BadRequestException(
-          'No se encontró una especialidad con el ID proporcionado.',
-        );
-      }
-
-      atencion.especialidad = especialidad.nombre;
-    }
-
+    // Actualizar el doctor y su especialidad
+    atencion.doctor = doctor;
+    atencion.especialidad = doctor.especialidad?.nombre || null; // Actualizar especialidad
+  }
+  
     if (updateAtencionDto.fecha) {
       atencion.fecha = updateAtencionDto.fecha;
     }
@@ -146,6 +138,8 @@ export class AtencionService {
     }
     return await this.atencionesRepository.save(atencion);
   }
+
+
   async remove(id: number) {
     return await this.atencionesRepository.delete({id});
   }

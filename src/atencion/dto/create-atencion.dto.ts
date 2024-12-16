@@ -14,9 +14,7 @@ export class CreateAtencionDto {
   @IsNumber()
   doctorId: number; // Ahora recibimos el ID del doctor
 
-  @IsNotEmpty()
-  @IsNumber()
-  especialidadId: number;
+ 
 
   @IsBoolean()
   estado?: boolean; 
