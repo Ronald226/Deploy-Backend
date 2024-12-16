@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany,ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany,ManyToOne, JoinColumn } from 'typeorm';
 import { Atencion } from '../../atencion/entities/atencion.entity';
 import { Especialidad } from '../../especialidades/entities/especialidade.entity';
 
@@ -16,6 +16,11 @@ export class Doctor {
 
   @OneToMany(() => Atencion, (atencion) => atencion.doctor)
   atenciones: Atencion[];
+  
   @ManyToOne(() => Especialidad, (especialidad) => especialidad.doctores, { eager: true })
+  @JoinColumn({ name: 'especialidadId'})
   especialidad: Especialidad;
+
+  @Column()
+  especialidadId : number;
 }
